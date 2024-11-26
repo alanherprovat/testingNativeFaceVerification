@@ -1,3 +1,12 @@
 {
-  "extends": "@react-native/typescript-config/tsconfig.json"
+  "extends": "@react-native/typescript-config/tsconfig.json",
+  "compilerOptions": {
+    "jsx": "react", // Or "react-jsx" for React 17+
+    "target": "es6", // or a higher version like "es2015" or "esnext"
+    "module": "esnext", // Update this to "es2015" or "esnext"
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
+  }
 }
