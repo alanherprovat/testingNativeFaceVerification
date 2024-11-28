@@ -17,6 +17,7 @@ import {
 } from 'react-native';
 import { useCameraPermission,useCameraDevice } from 'react-native-vision-camera';
 import CameraCom from './components/camera';
+import MLKitDetection from './components/MLKitDetection';
 
 import {
   Colors,
@@ -87,11 +88,10 @@ function App() {
           <Section title="See Your Changes">
             <ReloadInstructions />
           </Section>
-          <Section title="Debug">
-            <DebugInstructions />
+          <Section title="MLKITSection">
+           <MLKitDetection/>
           </Section>
-          {/* Uncomment if needed */}
-          {/* <LearnMoreLinks /> */}
+       
         </View>
       </ScrollView>
     </SafeAreaView>

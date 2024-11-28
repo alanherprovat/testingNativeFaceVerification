@@ -47,9 +47,9 @@ export default function CameraCom() {
 
   const frameProcessor = useFrameProcessor((frame) => {
     'worklet'
-    const objects = detectObjects(frame)
-    const label = objects[0].name
-    console.log(`You're looking at a ${label}.`)
+    // console.log(frame.height,frame.width,frame.pixelFormat)
+    // const data = new Uint8Array(frame.toArrayBuffer())
+    // console.log(data)
   }, [])
 
 
@@ -68,25 +68,21 @@ export default function CameraCom() {
           <Text style={{color: 'red'}}>NO Device Found !!</Text>
         </View>
       ) : (
-        <>
+      
          <Camera
           ref={camera}
-          style={{ flex: 1,height:360,width:360 }}
+          style={{ height:360,width:360 }}
           device={device}
           isActive={true}
           fps={30}
           video={true}
           format={lowResolutionFormat}
-        frameProcessor={frameProcessor}
-          onInitialized={takeVedio}
-          
-          
-        
+          frameProcessor={frameProcessor}
+          frameProcessorFps={5}
+          // onInitialized={takeVedio}
+    
         />
-          <TouchableOpacity onPress={()=>takeVedio}>
-            <Text style={{color: 'red'}}>Capture Vedio</Text>
-          </TouchableOpacity>
-        </>
+       
        
       )}
     </>
