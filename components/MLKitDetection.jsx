@@ -4,6 +4,7 @@ import React,{useState} from 'react';
 import FaceDetection from '@react-native-ml-kit/face-detection';
 
 export async function scanFaces(imageUrl) {
+
   try {
     // Use await to resolve the Promise returned by FaceDetection.detect
     const faces = await FaceDetection.detect(imageUrl, { landmarkMode: 'all' });

@@ -26,6 +26,7 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 
+
 function Section({ title, children }) {
   const isDarkMode = useColorScheme() === 'dark';
   return (

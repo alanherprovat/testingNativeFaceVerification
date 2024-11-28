@@ -16,6 +16,8 @@ import {
 } from 'react-native-vision-camera';
 import { labelImage } from "vision-camera-image-labeler";
 import { useFrameProcessor } from 'react-native-vision-camera';
+import { runOnJS } from 'react-native-reanimated';
+import { scanFaces } from './MLKitDetection';
 
 export default function CameraCom() {
   const device = useCameraDevice('front');
@@ -47,9 +49,14 @@ export default function CameraCom() {
 
   const frameProcessor = useFrameProcessor((frame) => {
     'worklet'
-    // console.log(frame.height,frame.width,frame.pixelFormat)
-    // const data = new Uint8Array(frame.toArrayBuffer())
-    // console.log(data)
+     console.log("Frame processor is running"); // Test log to ensure worklet is being called
+    // console.log(frame.height,frame.width)
+    // Use runOnJS to call scanFaces asynchronously on the JS thread
+    // runOnJS(() => {
+    //    scanFaces('https://images.pexels.com/photos/2379005/pexels-photo-2379005.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500');
+    //    console.log("inside run on js")
+    // })();
+
   }, [])
 
 
@@ -78,7 +85,7 @@ export default function CameraCom() {
           video={true}
           format={lowResolutionFormat}
           frameProcessor={frameProcessor}
-          frameProcessorFps={5}
+          frameProcessorFps={1}
           // onInitialized={takeVedio}
     
         />
