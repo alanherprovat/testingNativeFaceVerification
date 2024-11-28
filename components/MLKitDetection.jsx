@@ -3,6 +3,9 @@ import Svg, { Rect, Circle } from 'react-native-svg';
 import React,{useState} from 'react';
 import FaceDetection from '@react-native-ml-kit/face-detection';
 
+
+
+
 export async function scanFaces(imageUrl) {
 
   try {
@@ -14,6 +17,10 @@ export async function scanFaces(imageUrl) {
     console.error('Error detecting faces:', error);
   }
 }
+export function processFrame(frame) {
+    console.log('Processing frame on JS thread:', frame);
+    scanFaces(frame); // Do async work outside worklet
+  }
 
 const MLKitDetection = () => {
 
