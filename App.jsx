@@ -5,7 +5,7 @@
  * @format
  */
 
-import React from 'react';
+import React,{useState} from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -16,8 +16,12 @@ import {
   View,
 } from 'react-native';
 import { useCameraPermission,useCameraDevice } from 'react-native-vision-camera';
+import ProgressBar from './components/common/ProgressBarCircular';
 import CameraCom from './components/camera';
+import CameraTest from './components/cameratest';
+import CameraTestTwo from './components/cameratestTwo'
 import MLKitDetection from './components/MLKitDetection';
+import FaceBlur from './components/faceBlur';
 
 import {
   Colors,
@@ -25,10 +29,11 @@ import {
   Header,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
-
+import CanvasTest from './components/testCanvas';
 
 function Section({ title, children }) {
   const isDarkMode = useColorScheme() === 'dark';
+ 
   return (
     <View style={styles.sectionContainer}>
       <Text
@@ -36,21 +41,15 @@ function Section({ title, children }) {
           styles.sectionTitle,
           {
             color: isDarkMode ? Colors.white : Colors.black,
+            textAlign: 'center', // Center title
           },
         ]}
       >
         {title}
       </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}
-      >
+      <View style={styles.sectionChildrenContainer}>
         {children}
-      </Text>
+      </View>
     </View>
   );
 }
@@ -59,16 +58,15 @@ function App() {
   const isDarkMode = useColorScheme() === 'dark';
   const device = useCameraDevice('back')
   const { hasPermission } = useCameraPermission()
+  const [blinkCount, setBlinkCount] = useState(0);
+  const [faceExpression, setFaceExpression] = useState('');
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
 
-  // if (!hasPermission) return  <View><Text>Permission Required!!</Text></View>
-  // if (device == null) return  <View><Text>NO Device Found !!</Text></View>
-
   return (
-    <SafeAreaView style={backgroundStyle}>
+    <SafeAreaView style={[backgroundStyle, styles.safeArea]}>
       <StatusBar
         barStyle={isDarkMode ? 'light-content' : 'dark-content'}
         backgroundColor={backgroundStyle.backgroundColor}
@@ -76,23 +74,27 @@ function App() {
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
         style={backgroundStyle}
+        contentContainerStyle={styles.scrollViewContent}
       >
-        <Header />
         <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}
+          style={[
+            styles.contentContainer,
+            {
+              backgroundColor: isDarkMode ? Colors.black : Colors.white,
+            }
+          ]}
         >
-          <Section title="Play With Camera">
-            <CameraCom/>
+          <Section title="Take Your Live Photo">
+            <View style={styles.componentContainer}>
+              <CameraTest
+              blinkCount={blinkCount} 
+              setBlinkCount={setBlinkCount} 
+              faceExpression={faceExpression}  
+              setFaceExpression={setFaceExpression}
+              />
+             
+            </View>
           </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="MLKITSection">
-           <MLKitDetection/>
-          </Section>
-       
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -100,21 +102,46 @@ function App() {
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+  },
+  scrollViewContent: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  contentContainer: {
+    width: '90%',
+    alignItems: 'center',
+  },
   sectionContainer: {
+    width: '100%',
+    alignItems: 'center',
     marginTop: 32,
-    paddingHorizontal: 24,
   },
   sectionTitle: {
     fontSize: 24,
+    fontFamily:'K2D-Medium',
     fontWeight: '600',
+    marginBottom: 16,
+    textAlign: 'center',
+    lineHeight:30
+  },
+  sectionChildrenContainer: {
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   sectionDescription: {
     marginTop: 8,
     fontSize: 18,
     fontWeight: '400',
+    textAlign: 'center',
   },
-  highlight: {
-    fontWeight: '700',
+  componentContainer: {
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 

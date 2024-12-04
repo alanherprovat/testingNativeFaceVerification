@@ -12,17 +12,32 @@ import {
 import {
   useCameraPermission,
   useCameraDevice,
-  Camera,useCameraFormat
+  Camera,
+  useCameraFormat
 } from 'react-native-vision-camera';
+import { 
+  Face,
+  runAsync,
+  useFaceDetector,
+  FaceDetectionOptions
+} from 'react-native-vision-camera-face-detector'
+
 import { labelImage } from "vision-camera-image-labeler";
 import { useFrameProcessor } from 'react-native-vision-camera';
+import { Worklets } from 'react-native-worklets-core'
 import { runOnJS } from 'react-native-reanimated';
 import { scanFaces,processFrame } from './MLKitDetection';
 
 export default function CameraCom() {
+
+  const faceDetectionOptions = useRef<FaceDetectionOptions>( {
+    landmarkMode:'all'
+  } ).current
+
   const device = useCameraDevice('front');
   const {hasPermission, requestPermission} = useCameraPermission();
   const camera = useRef(null)
+  const { detectFaces } = useFaceDetector( faceDetectionOptions )
 
   const lowResolutionFormat = useCameraFormat(device, [
     { videoResolution: { width: 640, height: 480 } },
@@ -47,18 +62,23 @@ export default function CameraCom() {
       }, 5000)
   }
 
+  const handleDetectedFaces = Worklets.createRunOnJS((faces) => {
+    console.log('faces detected', faces);
+  });
+  
+
   const frameProcessor = useFrameProcessor((frame) => {
     'worklet'
-     console.log("Frame processor is running"); // Test log to ensure worklet is being called
-   
-    // console.log(frame.height,frame.width)
-    // Use runOnJS to call scanFaces asynchronously on the JS thread
-    // runOnJS(() => {
-    //    scanFaces('https://images.pexels.com/photos/2379005/pexels-photo-2379005.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500');
-    //    console.log("inside run on js")
-    // })();
-
-  }, [])
+    runAsync(frame, () => {
+      'worklet'
+      const faces = detectFaces(frame)
+      // ... chain some asynchronous frame processor
+      // ... do something asynchronously with frame
+      handleDetectedFaces(faces)
+    })
+    // ... chain frame processors
+    // ... do something with frame
+  }, [handleDetectedFaces])
 
 
 
